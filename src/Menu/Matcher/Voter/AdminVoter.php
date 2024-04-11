@@ -32,32 +32,43 @@ final class AdminVoter implements VoterInterface
 
     public function matchItem(ItemInterface $item): ?bool
     {
-        $admin = $item->getExtra('admin');
-
         $request = $this->requestStack->getMainRequest();
+        if (null === $request) {
+            return null;
+        }
 
-        if ($admin instanceof AdminInterface
+        $admin = $item->getExtra('admin');
+        if (
+            $admin instanceof AdminInterface
             && $admin->hasRoute('list') && $admin->hasAccess('list')
-            && null !== $request
+            && $this->match($admin, $request->get('_sonata_admin'))
         ) {
-            $requestCode = $request->get('_sonata_admin');
-
-            if ($admin->getCode() === $requestCode) {
-                return true;
-            }
-
-            foreach ($admin->getChildren() as $child) {
-                if ($child->getBaseCodeRoute() === $requestCode) {
-                    return true;
-                }
-            }
+            return true;
         }
 
         $route = $item->getExtra('route');
-        if (null !== $route && null !== $request && $route === $request->get('_route')) {
+        if (null !== $route && $route === $request->get('_route')) {
             return true;
         }
 
         return null;
+    }
+
+    /**
+     * @param AdminInterface<object> $admin
+     */
+    private function match(AdminInterface $admin, mixed $requestCode): bool
+    {
+        if ($admin->getBaseCodeRoute() === $requestCode) {
+            return true;
+        }
+
+        foreach ($admin->getChildren() as $child) {
+            if ($this->match($child, $requestCode)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
