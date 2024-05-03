@@ -522,15 +522,17 @@ class CRUDController extends AbstractController
             $extension->preBatchAction($this->admin, $action, $query, $idx, $allElements);
         }
 
-        if (\count($idx) > 0) {
-            $this->admin->getModelManager()->addIdentifiersToQuery($this->admin->getClass(), $query, $idx);
-        } elseif (!$allElements) {
-            $this->addFlash(
-                'sonata_flash_info',
-                $this->trans('flash_batch_no_elements_processed', [], 'SonataAdminBundle')
-            );
+        if (!$allElements) {
+            if (\count($idx) > 0) {
+                $this->admin->getModelManager()->addIdentifiersToQuery($this->admin->getClass(), $query, $idx);
+            } else {
+                $this->addFlash(
+                    'sonata_flash_info',
+                    $this->trans('flash_batch_no_elements_processed', [], 'SonataAdminBundle')
+                );
 
-            return $this->redirectToList();
+                return $this->redirectToList();
+            }
         }
 
         return \call_user_func($batchActionExecutable, $query, $forwardedRequest);
