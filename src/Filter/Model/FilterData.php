@@ -23,6 +23,11 @@ final class FilterData
      */
     private $value;
 
+    /**
+     * @psalm-pure
+     *
+     * @psalm-suppress ImpureVariable https://github.com/vimeo/psalm/issues/10974
+     */
     private function __construct(
         private ?int $type,
         private bool $hasValue,
@@ -44,7 +49,7 @@ final class FilterData
             if (!\is_int($data['type']) && (!\is_string($data['type']) || !is_numeric($data['type']))) {
                 throw new \InvalidArgumentException(sprintf(
                     'The "type" parameter MUST be of type "integer" or "null", "%s" given.',
-                    \gettype($data['type'])
+                    \gettype($data['type']) // @phpstan-ignore-line https://github.com/phpstan/phpstan/issues/11207
                 ));
             }
 
