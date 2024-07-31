@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Sonata\AdminBundle\Form\EventListener;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -33,7 +35,11 @@ final class MergeCollectionListener implements EventSubscriberInterface
     public function onBind(FormEvent $event): void
     {
         $collection = $event->getForm()->getData();
-        \assert(null === $collection || $collection instanceof Collection);
+        \assert(null === $collection || $collection instanceof ReadableCollection);
+
+        if (is_object($collection) && !$collection instanceof Collection) {
+            $collection = new ArrayCollection($collection->toArray());
+        }
 
         $data = $event->getData();
         \assert($data instanceof Collection);
