@@ -75,7 +75,7 @@ final class BreadcrumbsBuilder implements BreadcrumbsBuilderInterface
     public function buildBreadcrumbs(
         AdminInterface $admin,
         string $action,
-        ?ItemInterface $menu = null
+        ?ItemInterface $menu = null,
     ): ItemInterface {
         if (null === $menu) {
             $menu = $admin->getMenuFactory()->createItem('root');
@@ -92,7 +92,7 @@ final class BreadcrumbsBuilder implements BreadcrumbsBuilderInterface
         $menu = $this->createMenuItem(
             $admin,
             $menu,
-            sprintf('%s_list', $admin->getClassnameLabel()),
+            \sprintf('%s_list', $admin->getClassnameLabel()),
             $admin->getTranslationDomain(),
             [
                 'uri' => $admin->hasRoute('list') && $admin->hasAccess('list') ?
@@ -139,7 +139,7 @@ final class BreadcrumbsBuilder implements BreadcrumbsBuilderInterface
         return $this->createMenuItem(
             $admin,
             $menu,
-            sprintf('%s_%s', $admin->getClassnameLabel(), $action),
+            \sprintf('%s_%s', $admin->getClassnameLabel(), $action),
             $admin->getTranslationDomain()
         );
     }
@@ -161,7 +161,7 @@ final class BreadcrumbsBuilder implements BreadcrumbsBuilderInterface
         ItemInterface $menu,
         string $name,
         ?string $translationDomain = null,
-        array $options = []
+        array $options = [],
     ): ItemInterface {
         $options = array_merge([
             'extras' => [

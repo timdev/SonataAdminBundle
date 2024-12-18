@@ -88,9 +88,9 @@ final class AdminMaker extends AbstractMaker
     public function __construct(
         private string $projectDirectory,
         private array $availableModelManagers,
-        private string $defaultController
+        private string $defaultController,
     ) {
-        $this->skeletonDirectory = sprintf('%s/../Resources/skeleton', __DIR__);
+        $this->skeletonDirectory = \sprintf('%s/../Resources/skeleton', __DIR__);
     }
 
     public static function getCommandName(): string
@@ -122,14 +122,14 @@ final class AdminMaker extends AbstractMaker
         $this->modelClass = $io->ask(
             'The fully qualified model class',
             $input->getArgument('model'),
-            [Validators::class, 'validateClass']
+            Validators::validateClass(...)
         );
-        $this->modelClassBasename = \array_slice(explode('\\', $this->modelClass), -1)[0];
+        $this->modelClassBasename = \array_slice(explode('\\', (string) $this->modelClass), -1)[0];
 
         $this->adminClassBasename = $io->ask(
             'The admin class basename',
-            $input->getOption('admin') ?? sprintf('%sAdmin', $this->modelClassBasename),
-            [Validators::class, 'validateAdminClassBasename']
+            $input->getOption('admin') ?? \sprintf('%sAdmin', $this->modelClassBasename),
+            Validators::validateAdminClassBasename(...)
         );
         if (\count($this->availableModelManagers) > 1) {
             $managerTypes = array_keys($this->availableModelManagers);
@@ -140,22 +140,22 @@ final class AdminMaker extends AbstractMaker
         if ($io->confirm('Do you want to generate a controller?', false)) {
             $this->controllerClassBasename = $io->ask(
                 'The controller class basename',
-                $input->getOption('controller') ?? sprintf('%sAdminController', $this->modelClassBasename),
-                [Validators::class, 'validateControllerClassBasename']
+                $input->getOption('controller') ?? \sprintf('%sAdminController', $this->modelClassBasename),
+                Validators::validateControllerClassBasename(...)
             );
             $input->setOption('controller', $this->controllerClassBasename);
         }
         if ($io->confirm('Do you want to update the services YAML configuration file?', true)) {
-            $path = sprintf('%s/config/', $this->projectDirectory);
+            $path = \sprintf('%s/config/', $this->projectDirectory);
             $servicesFile = $io->ask(
                 'The services YAML configuration file',
                 $input->getOption('services') ?? (is_file($path.'admin.yaml') ? 'admin.yaml' : 'services.yaml'),
-                [Validators::class, 'validateServicesFile']
+                Validators::validateServicesFile(...)
             );
             $id = $io->ask(
                 'The admin service ID',
                 $this->getAdminServiceId($this->adminClassBasename),
-                [Validators::class, 'validateServiceId']
+                Validators::validateServiceId(...)
             );
             $input->setOption('services', $servicesFile);
             $input->setOption('id', $id);
@@ -206,7 +206,7 @@ final class AdminMaker extends AbstractMaker
 
     private function getAdminServiceId(string $adminClassBasename): string
     {
-        return Container::underscore(sprintf(
+        return Container::underscore(\sprintf(
             'admin.%s',
             str_replace('\\', '.', str_ends_with($adminClassBasename, 'Admin') ?
                 substr($adminClassBasename, 0, -5) : $adminClassBasename)
@@ -220,11 +220,11 @@ final class AdminMaker extends AbstractMaker
         InputInterface $input,
         ConsoleStyle $io,
         string $adminClassFullName,
-        string $controllerClassFullName
+        string $controllerClassFullName,
     ): void {
         $servicesFile = $input->getOption('services');
         if (null !== $servicesFile) {
-            $file = sprintf('%s/config/%s', $this->projectDirectory, $servicesFile);
+            $file = \sprintf('%s/config/%s', $this->projectDirectory, $servicesFile);
             $servicesManipulator = new ServicesManipulator($file);
             $controllerName = null !== $this->controllerClassBasename ? $controllerClassFullName : '~';
 
@@ -238,7 +238,7 @@ final class AdminMaker extends AbstractMaker
                 substr($this->managerType, \strlen('sonata.admin.manager.'))
             );
 
-            $io->writeln(sprintf(
+            $io->writeln(\sprintf(
                 '%sThe service "<info>%s</info>" has been appended to the file <info>"%s</info>".',
                 \PHP_EOL,
                 $id,
@@ -250,19 +250,19 @@ final class AdminMaker extends AbstractMaker
     private function generateController(
         ConsoleStyle $io,
         Generator $generator,
-        ClassNameDetails $controllerClassNameDetails
+        ClassNameDetails $controllerClassNameDetails,
     ): void {
         $controllerClassFullName = $controllerClassNameDetails->getFullName();
         $generator->generateClass(
             $controllerClassFullName,
-            sprintf('%s/AdminController.tpl.php', $this->skeletonDirectory),
+            \sprintf('%s/AdminController.tpl.php', $this->skeletonDirectory),
             [
                 'default_controller' => $this->defaultController,
                 'default_controller_short_name' => Str::getShortClassName($this->defaultController),
             ]
         );
         $generator->writeChanges();
-        $io->writeln(sprintf(
+        $io->writeln(\sprintf(
             '%sThe controller class "<info>%s</info>" has been generated under the file "<info>%s</info>".',
             \PHP_EOL,
             $controllerClassNameDetails->getShortName(),
@@ -273,27 +273,27 @@ final class AdminMaker extends AbstractMaker
     private function generateAdmin(
         ConsoleStyle $io,
         Generator $generator,
-        ClassNameDetails $adminClassNameDetails
+        ClassNameDetails $adminClassNameDetails,
     ): void {
         $adminClassFullName = $adminClassNameDetails->getFullName();
 
         $fields = $this->modelManager->getExportFields($this->modelClass);
         $fieldString = '';
         foreach ($fields as $field) {
-            $fieldString = $fieldString.sprintf('%12s', '')."->add('".$field."')".\PHP_EOL;
+            $fieldString = $fieldString.\sprintf('%12s', '')."->add('".$field."')".\PHP_EOL;
         }
 
-        $fieldString .= sprintf('%12s', '');
+        $fieldString .= \sprintf('%12s', '');
 
         $generator->generateClass(
             $adminClassFullName,
-            sprintf('%s/Admin.tpl.php', $this->skeletonDirectory),
+            \sprintf('%s/Admin.tpl.php', $this->skeletonDirectory),
             ['fields' => $fieldString]
         );
 
         $generator->writeChanges();
 
-        $io->writeln(sprintf(
+        $io->writeln(\sprintf(
             '%sThe admin class "<info>%s</info>" has been generated under the file "<info>%s</info>".',
             \PHP_EOL,
             $adminClassNameDetails->getShortName(),
@@ -306,7 +306,7 @@ final class AdminMaker extends AbstractMaker
         $this->modelClass = Validators::validateClass($input->getArgument('model'));
         $this->modelClassBasename = (new \ReflectionClass($this->modelClass))->getShortName();
         $this->adminClassBasename = Validators::validateAdminClassBasename(
-            $input->getOption('admin') ?? sprintf('%sAdmin', $this->modelClassBasename)
+            $input->getOption('admin') ?? \sprintf('%sAdmin', $this->modelClassBasename)
         );
 
         $this->controllerClassBasename = $input->getOption('controller');

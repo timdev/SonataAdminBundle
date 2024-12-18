@@ -22,7 +22,7 @@ use Sonata\Exporter\ExporterInterface;
 final class AdminExporter
 {
     public function __construct(
-        private ExporterInterface $exporter
+        private ExporterInterface $exporter,
     ) {
     }
 
@@ -59,7 +59,7 @@ final class AdminExporter
         $class = $admin->getClass();
         $namespaceSeparatorPos = strripos($class, '\\');
 
-        return sprintf(
+        return \sprintf(
             'export_%s_%s.%s',
             strtolower(false !== $namespaceSeparatorPos ? substr($class, $namespaceSeparatorPos + 1) : $class),
             date('Y_m_d_H_i_s', time()),

@@ -45,7 +45,7 @@ final class AdminType extends AbstractType
             $admin->getParentFieldDescription()->setAssociationAdmin($admin);
         }
 
-        if (true === $options['delete'] && $admin->hasAccess('delete')) {
+        if (true === $options['delete'] && $admin->hasAccess('delete', $builder->getData())) {
             $deleteOptions = $options['delete_options'];
             if (!\array_key_exists('translation_domain', $deleteOptions['type_options'])) {
                 $deleteOptions['type_options']['translation_domain'] = $admin->getTranslationDomain();
@@ -78,7 +78,7 @@ final class AdminType extends AbstractType
                     $parentPath = implode(
                         '',
                         array_map(
-                            static fn (array $associationMapping): string => sprintf('%s.', $associationMapping['fieldName']),
+                            static fn (array $associationMapping): string => \sprintf('%s.', $associationMapping['fieldName']),
                             $this->getFieldDescription($options)->getParentAssociationMappings()
                         )
                     );

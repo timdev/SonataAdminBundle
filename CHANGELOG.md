@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.34.0](https://github.com/sonata-project/SonataAdminBundle/compare/4.33.0...4.34.0) - 2024-12-07
+### Changed
+- [[#8225](https://github.com/sonata-project/SonataAdminBundle/pull/8225)] Drop Symfony < 6.4 ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#8225](https://github.com/sonata-project/SonataAdminBundle/pull/8225)] Drop PHP 8 ([@VincentLanglet](https://github.com/VincentLanglet))
+
+## [4.33.0](https://github.com/sonata-project/SonataAdminBundle/compare/4.32.0...4.33.0) - 2024-12-04
+### Added
+- [[#8219](https://github.com/sonata-project/SonataAdminBundle/pull/8219)] Support editable mode on `FieldDescriptionInterface::TYPE_ENUM` ([@onEXHovia](https://github.com/onEXHovia))
+
+### Fixed
+- [[#8218](https://github.com/sonata-project/SonataAdminBundle/pull/8218)] Style fix for the version comparison page ([@vityachis](https://github.com/vityachis))
+- [[#8200](https://github.com/sonata-project/SonataAdminBundle/pull/8200)] Allow delete permission to be voted on a specific subject. ([@DenuxPlays](https://github.com/DenuxPlays))
+
+## [4.32.0](https://github.com/sonata-project/SonataAdminBundle/compare/4.31.0...4.32.0) - 2024-11-14
+### Added
+- [[#8213](https://github.com/sonata-project/SonataAdminBundle/pull/8213)] Support for select2 tags option ([@micbis](https://github.com/micbis))
+
+### Changed
+- [[#8212](https://github.com/sonata-project/SonataAdminBundle/pull/8212)] Enums implementing Symfony's `TranslatableInterface` are now correctly translated by the `FieldDescriptionInterface::TYPE_ENUM` field type ([@zyberspace](https://github.com/zyberspace))
+
 ## [4.31.0](https://github.com/sonata-project/SonataAdminBundle/compare/4.30.2...4.31.0) - 2024-07-15
 ### Added
 - [[#8192](https://github.com/sonata-project/SonataAdminBundle/pull/8192)]  Enable security information mapping for `RoleSecurityHandler` ([@core23](https://github.com/core23))

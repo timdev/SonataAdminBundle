@@ -128,7 +128,7 @@ final class ShowMapperTest extends TestCase
             ->willReturnCallback(static function (
                 FieldDescriptionCollection $list,
                 ?string $type,
-                FieldDescriptionInterface $fieldDescription
+                FieldDescriptionInterface $fieldDescription,
             ): void {
                 $list->add($fieldDescription);
             });
@@ -369,7 +369,7 @@ final class ShowMapperTest extends TestCase
         $name = 'name';
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(
-            sprintf('Duplicate field %s "name" in show mapper. Names should be unique.', $name)
+            \sprintf('Duplicate field %s "name" in show mapper. Names should be unique.', $name)
         );
 
         $this->showMapper->add($name);

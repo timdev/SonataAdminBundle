@@ -34,7 +34,7 @@ final class DefaultRouteGenerator implements RouteGeneratorInterface
 
     public function __construct(
         private RouterInterface $router,
-        private RoutesCache $cache
+        private RoutesCache $cache,
     ) {
     }
 
@@ -47,7 +47,7 @@ final class DefaultRouteGenerator implements RouteGeneratorInterface
         AdminInterface $admin,
         string $name,
         array $parameters = [],
-        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH,
     ): string {
         $arrayRoute = $this->generateMenuUrl($admin, $name, $parameters, $referenceType);
 
@@ -62,7 +62,7 @@ final class DefaultRouteGenerator implements RouteGeneratorInterface
         AdminInterface $admin,
         string $name,
         array $parameters = [],
-        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH,
     ): array {
         // if the admin is a child we automatically append the parent's id
         if ($admin->isChild() && $admin->hasRequest()) {
@@ -106,7 +106,7 @@ final class DefaultRouteGenerator implements RouteGeneratorInterface
         $code = $this->getCode($admin, $name);
 
         if (!\array_key_exists($code, $this->caches)) {
-            throw new \RuntimeException(sprintf('unable to find the route `%s`', $code));
+            throw new \RuntimeException(\sprintf('unable to find the route `%s`', $code));
         }
 
         return [
@@ -132,18 +132,18 @@ final class DefaultRouteGenerator implements RouteGeneratorInterface
 
         // Someone provided the full name
         if (
-            str_starts_with($name, sprintf('%s|', $codePrefix)) // Child admin route already prefixed
-            || str_starts_with($name, sprintf('%s.', $codePrefix)) // admin route already prefixed
+            str_starts_with($name, \sprintf('%s|', $codePrefix)) // Child admin route already prefixed
+            || str_starts_with($name, \sprintf('%s.', $codePrefix)) // admin route already prefixed
         ) {
             return $name;
         }
 
         // Someone provided a code, so it is a child
         if (strpos($name, '.') > 0) {
-            return sprintf('%s|%s', $codePrefix, $name);
+            return \sprintf('%s|%s', $codePrefix, $name);
         }
 
-        return sprintf('%s.%s', $codePrefix, $name);
+        return \sprintf('%s.%s', $codePrefix, $name);
     }
 
     /**

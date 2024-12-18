@@ -26,7 +26,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
      * @internal This class should only be used through Twig
      */
     public function __construct(
-        private PropertyAccessorInterface $propertyAccessor
+        private PropertyAccessorInterface $propertyAccessor,
     ) {
     }
 
@@ -40,7 +40,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
         Environment $environment,
         $listElement,
         FieldDescriptionInterface $fieldDescription,
-        array $params = []
+        array $params = [],
     ): string {
         $template = $this->getTemplate(
             $fieldDescription,
@@ -61,7 +61,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
     public function renderViewElement(
         Environment $environment,
         FieldDescriptionInterface $fieldDescription,
-        object $object
+        object $object,
     ): string {
         $template = $this->getTemplate(
             $fieldDescription,
@@ -84,7 +84,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
         Environment $environment,
         FieldDescriptionInterface $fieldDescription,
         object $baseObject,
-        object $compareObject
+        object $compareObject,
     ): string {
         $template = $this->getTemplate(
             $fieldDescription,
@@ -136,7 +136,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
 
         if (null === $propertyPath) {
             if (!method_exists($element, '__toString')) {
-                throw new \RuntimeException(sprintf(
+                throw new \RuntimeException(\sprintf(
                     'You must define an `associated_property` option or create a `%s::__toString` method'
                     .' to the field option %s from service %s is ',
                     $element::class,
@@ -153,7 +153,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
         }
 
         if (!\is_string($propertyPath) && !$propertyPath instanceof PropertyPathInterface) {
-            throw new \TypeError(sprintf(
+            throw new \TypeError(\sprintf(
                 'The option "associated_property" must be a string, a callable or a %s, %s given.',
                 PropertyPathInterface::class,
                 \is_object($propertyPath) ? 'instance of '.$propertyPath::class : \gettype($propertyPath)
@@ -174,18 +174,18 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
      */
     private function getObjectAndValueFromListElement(
         $listElement,
-        FieldDescriptionInterface $fieldDescription
+        FieldDescriptionInterface $fieldDescription,
     ): array {
         if (\is_object($listElement)) {
             $object = $listElement;
         } elseif (\is_array($listElement)) {
             if (!isset($listElement[0]) || !\is_object($listElement[0])) {
-                throw new \TypeError(sprintf('If argument 1 passed to %s() is an array it must contain an object at offset 0.', __METHOD__));
+                throw new \TypeError(\sprintf('If argument 1 passed to %s() is an array it must contain an object at offset 0.', __METHOD__));
             }
 
             $object = $listElement[0];
         } else {
-            throw new \TypeError(sprintf('Argument 1 passed to %s() must be an object or an array, %s given.', __METHOD__, \gettype($listElement)));
+            throw new \TypeError(\sprintf('Argument 1 passed to %s() must be an object or an array, %s given.', __METHOD__, \gettype($listElement)));
         }
 
         if (\is_array($listElement) && \array_key_exists($fieldDescription->getName(), $listElement)) {
@@ -204,7 +204,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
         FieldDescriptionInterface $fieldDescription,
         TemplateWrapper $template,
         array $parameters,
-        Environment $environment
+        Environment $environment,
     ): string {
         $content = $template->render($parameters);
 
@@ -220,7 +220,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
                 <!-- END - fieldName: %s -->
                 EOT;
 
-            return sprintf(
+            return \sprintf(
                 $commentTemplate,
                 $fieldDescription->getFieldName(),
                 $fieldDescription->getTemplate() ?? '',
@@ -236,7 +236,7 @@ final class RenderElementRuntime implements RuntimeExtensionInterface
     private function getTemplate(
         FieldDescriptionInterface $fieldDescription,
         string $defaultTemplate,
-        Environment $environment
+        Environment $environment,
     ): TemplateWrapper {
         $templateName = $fieldDescription->getTemplate() ?? $defaultTemplate;
 

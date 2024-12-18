@@ -20,6 +20,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 final class XEditableRuntime implements RuntimeExtensionInterface
 {
     public const FIELD_DESCRIPTION_MAPPING = [
+        FieldDescriptionInterface::TYPE_ENUM => 'select',
         FieldDescriptionInterface::TYPE_CHOICE => 'select',
         FieldDescriptionInterface::TYPE_BOOLEAN => 'select',
         FieldDescriptionInterface::TYPE_TEXTAREA => 'textarea',
@@ -40,7 +41,7 @@ final class XEditableRuntime implements RuntimeExtensionInterface
      */
     public function __construct(
         private TranslatorInterface $translator,
-        private array $xEditableTypeMapping = self::FIELD_DESCRIPTION_MAPPING
+        private array $xEditableTypeMapping = self::FIELD_DESCRIPTION_MAPPING,
     ) {
     }
 
@@ -81,6 +82,11 @@ final class XEditableRuntime implements RuntimeExtensionInterface
                     // the choice is already in the right format
                     $xEditableChoices[] = $text;
                     break;
+                }
+
+                if ($text instanceof \BackedEnum) {
+                    $value = $text->value;
+                    $text = $text->name;
                 }
 
                 if (\is_string($catalogue)) {

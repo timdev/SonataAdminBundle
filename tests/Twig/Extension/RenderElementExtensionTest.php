@@ -22,6 +22,7 @@ use Sonata\AdminBundle\Templating\MutableTemplateRegistryInterface;
 use Sonata\AdminBundle\Templating\TemplateRegistryInterface;
 use Sonata\AdminBundle\Tests\Fixtures\Entity\FooToString;
 use Sonata\AdminBundle\Tests\Fixtures\Enum\Suit;
+use Sonata\AdminBundle\Tests\Fixtures\Enum\TranslatableSuit;
 use Sonata\AdminBundle\Tests\Fixtures\StubFilesystemLoader;
 use Sonata\AdminBundle\Twig\Extension\RenderElementExtension;
 use Sonata\AdminBundle\Twig\Extension\XEditableExtension;
@@ -36,6 +37,7 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Loader\XmlFileLoader;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -79,11 +81,18 @@ final class RenderElementExtensionTest extends TestCase
         // translation extension
         $translator = new Translator('en');
         $translator->addLoader('xlf', new XliffFileLoader());
+        $translator->addLoader('yaml', new YamlFileLoader());
         $translator->addResource(
             'xlf',
-            sprintf('%s/../../../src/Resources/translations/SonataAdminBundle.en.xliff', __DIR__),
+            \sprintf('%s/../../../src/Resources/translations/SonataAdminBundle.en.xliff', __DIR__),
             'en',
             'SonataAdminBundle'
+        );
+        $translator->addResource(
+            'yaml',
+            \sprintf('%s/../../Fixtures/Resources/translations/render-element-extension-test.en.yaml', __DIR__),
+            'en',
+            'render-element-extension-test',
         );
 
         $this->translator = $translator;
@@ -353,7 +362,7 @@ final class RenderElementExtensionTest extends TestCase
         string $type,
         mixed $value,
         array $options,
-        ?string $objectName
+        ?string $objectName,
     ): void {
         $this->fieldDescription
             ->method('getValue')
@@ -444,7 +453,7 @@ final class RenderElementExtensionTest extends TestCase
                 return $default;
             });
 
-        $element = new class() {
+        $element = new class {
             public function customToString(): string
             {
                 return 'fooBar';
@@ -507,7 +516,7 @@ final class RenderElementExtensionTest extends TestCase
             ->method('getOption')
             ->willReturnCallback(static function (string $value, mixed $default = null): mixed {
                 if ('associated_property' === $value) {
-                    return static fn (object $element): string => property_exists($element, 'foo') ? sprintf('closure %s', $element->foo) : '';
+                    return static fn (object $element): string => property_exists($element, 'foo') ? \sprintf('closure %s', $element->foo) : '';
                 }
 
                 return $default;
@@ -1514,11 +1523,6 @@ final class RenderElementExtensionTest extends TestCase
             ],
         ];
 
-        // TODO: Remove the "if" check when dropping support of PHP < 8.1 and add the case to the list
-        if (\PHP_VERSION_ID < 80100) {
-            return $elements;
-        }
-
         $elements[] = [
             '<td class="sonata-ba-list-field sonata-ba-list-field-enum" objectId="12345"> &nbsp; </td>',
             FieldDescriptionInterface::TYPE_ENUM,
@@ -1548,6 +1552,44 @@ final class RenderElementExtensionTest extends TestCase
             Suit::Clubs,
             [
                 'use_value' => true,
+            ],
+        ];
+
+        $elements[] = [
+            '<td class="sonata-ba-list-field sonata-ba-list-field-enum" objectId="12345"> [trans]Diamonds[/trans] </td>',
+            FieldDescriptionInterface::TYPE_ENUM,
+            Suit::Diamonds,
+            [
+                'use_value' => false,
+                'enum_translation_domain' => 'render-element-extension-test',
+            ],
+        ];
+
+        $elements[] = [
+            '<td class="sonata-ba-list-field sonata-ba-list-field-enum" objectId="12345"> [trans]D[/trans] </td>',
+            FieldDescriptionInterface::TYPE_ENUM,
+            Suit::Diamonds,
+            [
+                'use_value' => true,
+                'enum_translation_domain' => 'render-element-extension-test',
+            ],
+        ];
+
+        $elements[] = [
+            '<td class="sonata-ba-list-field sonata-ba-list-field-enum" objectId="12345"> [trans]enum.suit.hearts[/trans] </td>',
+            FieldDescriptionInterface::TYPE_ENUM,
+            TranslatableSuit::Hearts,
+            [],
+        ];
+
+        $elements[] = [
+            '<td class="sonata-ba-list-field sonata-ba-list-field-enum" objectId="12345"> [trans]enum.suit.spades[/trans] </td>',
+            FieldDescriptionInterface::TYPE_ENUM,
+            TranslatableSuit::Spades,
+            [
+                // These values are ignored if the enum implements the TranslatableInterface
+                'use_value' => false,
+                'enum_translation_domain' => 'doesnt-exist',
             ],
         ];
 
@@ -2056,11 +2098,6 @@ final class RenderElementExtensionTest extends TestCase
             ],
         ];
 
-        // TODO: Remove the "if" check when dropping support of PHP < 8.1 and add the case to the list
-        if (\PHP_VERSION_ID < 80100) {
-            return $elements;
-        }
-
         $elements[] = [
             '<th>Data</th> <td>Hearts</td>',
             FieldDescriptionInterface::TYPE_ENUM,
@@ -2148,12 +2185,12 @@ final class RenderElementExtensionTest extends TestCase
     private function registerRoutingExtension(): void
     {
         $xmlFileLoader = new XmlFileLoader(new FileLocator([
-            sprintf('%s/../../../src/Resources/config/routing', __DIR__),
+            \sprintf('%s/../../../src/Resources/config/routing', __DIR__),
         ]));
         $routeCollection = $xmlFileLoader->load('sonata_admin.xml');
 
         $xmlFileLoader = new XmlFileLoader(new FileLocator([
-            sprintf('%s/../../Fixtures/Resources/config/routing', __DIR__),
+            \sprintf('%s/../../Fixtures/Resources/config/routing', __DIR__),
         ]));
 
         $testRouteCollection = $xmlFileLoader->load('routing.xml');

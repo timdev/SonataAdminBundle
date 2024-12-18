@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 final class SessionFilterPersister implements FilterPersisterInterface
 {
     public function __construct(
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
     ) {
     }
 
@@ -48,6 +48,6 @@ final class SessionFilterPersister implements FilterPersisterInterface
      */
     private function buildStorageKey(string $adminCode): string
     {
-        return sprintf('%s.filter.parameters', $adminCode);
+        return \sprintf('%s.filter.parameters', $adminCode);
     }
 }

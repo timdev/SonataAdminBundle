@@ -54,7 +54,7 @@ final class ConfigureCRUDControllerListenerTest extends TestCase
 
         $controllerEvent = new ControllerEvent(
             $this->createStub(HttpKernelInterface::class),
-            [$controller, 'listAction'],
+            $controller->listAction(...),
             $request,
             HttpKernelInterface::MAIN_REQUEST
         );
@@ -74,8 +74,8 @@ final class ConfigureCRUDControllerListenerTest extends TestCase
             ->method('addGlobal')
             ->willReturnCallback(static function (string $name) use ($matcher) {
                 match ($matcher->getInvocationCount()) {
-                    1 => static::assertSame($name, 'admin'),
-                    2 => static::assertSame($name, 'base_template'),
+                    1 => static::assertSame('admin', $name),
+                    2 => static::assertSame('base_template', $name),
                     default => throw new \LogicException('Exactly 2 calls'),
                 };
             });

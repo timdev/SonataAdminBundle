@@ -77,7 +77,7 @@ final class RenderElementRuntimeTest extends TestCase
         $translator->addLoader('xlf', new XliffFileLoader());
         $translator->addResource(
             'xlf',
-            sprintf('%s/../../src/Resources/translations/SonataAdminBundle.en.xliff', __DIR__),
+            \sprintf('%s/../../src/Resources/translations/SonataAdminBundle.en.xliff', __DIR__),
             'en',
             'SonataAdminBundle'
         );
@@ -337,7 +337,7 @@ final class RenderElementRuntimeTest extends TestCase
         string $type,
         mixed $value,
         array $options,
-        ?string $objectName
+        ?string $objectName,
     ): void {
         $this->fieldDescription
             ->method('getValue')
@@ -419,7 +419,7 @@ final class RenderElementRuntimeTest extends TestCase
                 return $default;
             });
 
-        $element = new class() {
+        $element = new class {
             public function customToString(): string
             {
                 return 'fooBar';
@@ -472,7 +472,7 @@ final class RenderElementRuntimeTest extends TestCase
             ->method('getOption')
             ->willReturnCallback(static function (string $value, mixed $default = null): mixed {
                 if ('associated_property' === $value) {
-                    return static fn (object $element): string => property_exists($element, 'foo') ? sprintf('closure %s', $element->foo) : '';
+                    return static fn (object $element): string => property_exists($element, 'foo') ? \sprintf('closure %s', $element->foo) : '';
                 }
 
                 return $default;
@@ -1473,11 +1473,6 @@ final class RenderElementRuntimeTest extends TestCase
             ],
         ];
 
-        // TODO: Remove the "if" check when dropping support of PHP < 8.1 and add the case to the list
-        if (\PHP_VERSION_ID < 80100) {
-            return $elements;
-        }
-
         $elements[] = [
             '<td class="sonata-ba-list-field sonata-ba-list-field-enum" objectId="12345"> Hearts </td>',
             FieldDescriptionInterface::TYPE_ENUM,
@@ -2067,12 +2062,12 @@ final class RenderElementRuntimeTest extends TestCase
     private function registerRoutingExtension(): void
     {
         $xmlFileLoader = new XmlFileLoader(new FileLocator([
-            sprintf('%s/../../src/Resources/config/routing', __DIR__),
+            \sprintf('%s/../../src/Resources/config/routing', __DIR__),
         ]));
         $routeCollection = $xmlFileLoader->load('sonata_admin.xml');
 
         $xmlFileLoader = new XmlFileLoader(new FileLocator([
-            sprintf('%s/../Fixtures/Resources/config/routing', __DIR__),
+            \sprintf('%s/../Fixtures/Resources/config/routing', __DIR__),
         ]));
 
         $testRouteCollection = $xmlFileLoader->load('routing.xml');

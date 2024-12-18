@@ -15,6 +15,7 @@ namespace Sonata\AdminBundle\Tests\Twig;
 
 use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
+use Sonata\AdminBundle\Tests\Fixtures\Enum\Suit;
 use Sonata\AdminBundle\Twig\XEditableRuntime;
 use Symfony\Component\Translation\Translator;
 
@@ -89,6 +90,18 @@ final class XEditableRuntimeTest extends TestCase
             [
                 ['value' => 'Status1', 'text' => 'Alias1'],
                 ['value' => 'Status2', 'text' => 'Alias2'],
+            ],
+        ];
+
+        yield 'enum cases' => [
+            [
+                'required' => false,
+                'multiple' => false,
+                'choices' => [Suit::Hearts, Suit::Clubs],
+            ],
+            [
+                ['value' => 'H', 'text' => 'Hearts'],
+                ['value' => 'C', 'text' => 'Clubs'],
             ],
         ];
     }

@@ -30,7 +30,7 @@ final class GroupExtension extends AbstractExtension
      * @internal This class should only be used through Twig
      */
     public function __construct(
-        private GroupRuntime $groupRuntime
+        private GroupRuntime $groupRuntime,
     ) {
     }
 
@@ -63,7 +63,7 @@ final class GroupExtension extends AbstractExtension
      */
     public function getDashboardGroupsWithCreatableAdmins(): array
     {
-        @trigger_error(sprintf(
+        @trigger_error(\sprintf(
             'The method "%s()" is deprecated since sonata-project/admin-bundle 4.7 and will be removed in 5.0.'
             .'  Use "%s::%s()" instead.',
             __METHOD__,

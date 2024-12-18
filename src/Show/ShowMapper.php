@@ -40,7 +40,7 @@ final class ShowMapper extends BaseGroupedMapper
     public function __construct(
         private ShowBuilderInterface $builder,
         private FieldDescriptionCollection $list,
-        private AdminInterface $admin
+        private AdminInterface $admin,
     ) {
     }
 
@@ -76,7 +76,7 @@ final class ShowMapper extends BaseGroupedMapper
                 $fieldDescriptionOptions
             );
         } else {
-            throw new \LogicException(sprintf(
+            throw new \LogicException(\sprintf(
                 'Duplicate field name "%s" in show mapper. Names should be unique.',
                 $name
             ));

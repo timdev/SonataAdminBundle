@@ -23,7 +23,7 @@ use Sonata\AdminBundle\Model\AuditManagerInterface;
 final class PathInfoBuilder implements RouteBuilderInterface
 {
     public function __construct(
-        private AuditManagerInterface $manager
+        private AuditManagerInterface $manager,
     ) {
     }
 
@@ -32,19 +32,19 @@ final class PathInfoBuilder implements RouteBuilderInterface
         $collection->add('list');
         $collection->add('create');
         $collection->add('batch');
-        $collection->add('edit', sprintf('%s/edit', $admin->getRouterIdParameter()));
-        $collection->add('delete', sprintf('%s/delete', $admin->getRouterIdParameter()));
-        $collection->add('show', sprintf('%s/show', $admin->getRouterIdParameter()));
+        $collection->add('edit', \sprintf('%s/edit', $admin->getRouterIdParameter()));
+        $collection->add('delete', \sprintf('%s/delete', $admin->getRouterIdParameter()));
+        $collection->add('show', \sprintf('%s/show', $admin->getRouterIdParameter()));
         $collection->add('export');
 
         if ($this->manager->hasReader($admin->getClass())) {
-            $collection->add('history', sprintf('%s/history', $admin->getRouterIdParameter()));
-            $collection->add('history_view_revision', sprintf('%s/history/{revision}/view', $admin->getRouterIdParameter()));
-            $collection->add('history_compare_revisions', sprintf('%s/history/{baseRevision}/{compareRevision}/compare', $admin->getRouterIdParameter()));
+            $collection->add('history', \sprintf('%s/history', $admin->getRouterIdParameter()));
+            $collection->add('history_view_revision', \sprintf('%s/history/{revision}/view', $admin->getRouterIdParameter()));
+            $collection->add('history_compare_revisions', \sprintf('%s/history/{baseRevision}/{compareRevision}/compare', $admin->getRouterIdParameter()));
         }
 
         if ($admin->isAclEnabled()) {
-            $collection->add('acl', sprintf('%s/acl', $admin->getRouterIdParameter()));
+            $collection->add('acl', \sprintf('%s/acl', $admin->getRouterIdParameter()));
         }
 
         // add children urls

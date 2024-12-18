@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 final class RetrieveAutocompleteItemsAction
 {
     public function __construct(
-        private AdminFetcherInterface $adminFetcher
+        private AdminFetcherInterface $adminFetcher,
     ) {
     }
 
@@ -133,7 +133,7 @@ final class RetrieveAutocompleteItemsAction
             $previousFilter = null;
             foreach ($property as $prop) {
                 if (!$datagrid->hasFilter($prop)) {
-                    throw new BadRequestHttpException(sprintf(
+                    throw new BadRequestHttpException(\sprintf(
                         'To retrieve autocomplete items, you MUST add the filter "%s"'
                         .' to the %s::configureDatagridFilters() method.',
                         $prop,
@@ -143,7 +143,7 @@ final class RetrieveAutocompleteItemsAction
 
                 $filter = $datagrid->getFilter($prop);
                 if (!$filter instanceof ChainableFilterInterface) {
-                    throw new BadRequestHttpException(sprintf(
+                    throw new BadRequestHttpException(\sprintf(
                         'To retrieve autocomplete items with multiple properties,'
                         .' the filter "%s" of the admin "%s" MUST implements "%s".',
                         $filter->getName(),
@@ -165,7 +165,7 @@ final class RetrieveAutocompleteItemsAction
             $datagrid->reorderFilters($property);
         } elseif (\is_string($property)) {
             if (!$datagrid->hasFilter($property)) {
-                throw new BadRequestHttpException(sprintf(
+                throw new BadRequestHttpException(\sprintf(
                     'To retrieve autocomplete items, you MUST add the filter "%s"'
                     .' to the %s::configureDatagridFilters() method.',
                     $property,
@@ -232,16 +232,16 @@ final class RetrieveAutocompleteItemsAction
      */
     private function retrieveFilterFieldDescription(
         AdminInterface $admin,
-        string $field
+        string $field,
     ): FieldDescriptionInterface {
         if (!$admin->hasFilterFieldDescription($field)) {
-            throw new \RuntimeException(sprintf('The field "%s" does not exist.', $field));
+            throw new \RuntimeException(\sprintf('The field "%s" does not exist.', $field));
         }
 
         $fieldDescription = $admin->getFilterFieldDescription($field);
 
         if (null === $fieldDescription->getTargetModel()) {
-            throw new \RuntimeException(sprintf('No associated entity with field "%s".', $field));
+            throw new \RuntimeException(\sprintf('No associated entity with field "%s".', $field));
         }
 
         return $fieldDescription;
@@ -256,16 +256,16 @@ final class RetrieveAutocompleteItemsAction
      */
     private function retrieveFormFieldDescription(
         AdminInterface $admin,
-        string $field
+        string $field,
     ): FieldDescriptionInterface {
         if (!$admin->hasFormFieldDescription($field)) {
-            throw new \RuntimeException(sprintf('The field "%s" does not exist.', $field));
+            throw new \RuntimeException(\sprintf('The field "%s" does not exist.', $field));
         }
 
         $fieldDescription = $admin->getFormFieldDescription($field);
 
         if (null === $fieldDescription->getTargetModel()) {
-            throw new \RuntimeException(sprintf('No associated entity with field "%s".', $field));
+            throw new \RuntimeException(\sprintf('No associated entity with field "%s".', $field));
         }
 
         return $fieldDescription;

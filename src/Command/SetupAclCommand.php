@@ -31,7 +31,7 @@ final class SetupAclCommand extends Command
      */
     public function __construct(
         private Pool $pool,
-        private AdminAclManipulatorInterface $aclManipulator
+        private AdminAclManipulatorInterface $aclManipulator,
     ) {
         parent::__construct();
     }
@@ -45,7 +45,7 @@ final class SetupAclCommand extends Command
                 $admin = $this->pool->getInstance($code);
             } catch (\Exception $e) {
                 $output->writeln('<error>Warning : The admin class cannot be initiated from the command line</error>');
-                $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+                $output->writeln(\sprintf('<error>%s</error>', $e->getMessage()));
 
                 continue;
             }

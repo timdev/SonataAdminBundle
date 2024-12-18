@@ -31,7 +31,7 @@ final class FilterData
     private function __construct(
         private ?int $type,
         private bool $hasValue,
-        mixed $value = null
+        mixed $value = null,
     ) {
         if ($hasValue) {
             $this->value = $value;
@@ -47,9 +47,9 @@ final class FilterData
     {
         if (isset($data['type'])) {
             if (!\is_int($data['type']) && (!\is_string($data['type']) || !is_numeric($data['type']))) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new \InvalidArgumentException(\sprintf(
                     'The "type" parameter MUST be of type "integer" or "null", "%s" given.',
-                    \gettype($data['type']) // @phpstan-ignore-line https://github.com/phpstan/phpstan/issues/11207
+                    \gettype($data['type'])
                 ));
             }
 

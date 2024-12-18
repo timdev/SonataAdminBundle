@@ -36,7 +36,7 @@ class AdminHelper
     private const FORM_FIELD_DELETE = '_delete';
 
     public function __construct(
-        private PropertyAccessorInterface $propertyAccessor
+        private PropertyAccessorInterface $propertyAccessor,
     ) {
     }
 
@@ -175,7 +175,7 @@ class AdminHelper
             $collection = $this->propertyAccessor->getValue($subject, $path);
 
             if (!$collection instanceof \ArrayAccess && !\is_array($collection)) {
-                throw new \TypeError(sprintf(
+                throw new \TypeError(\sprintf(
                     'Collection must be an instance of %s or array, %s given.',
                     \ArrayAccess::class,
                     \is_object($collection) ? 'instance of "'.$collection::class.'"' : '"'.\gettype($collection).'"'
@@ -267,7 +267,7 @@ class AdminHelper
         }
 
         if ('' !== $currentPath) {
-            throw new \Exception(sprintf(
+            throw new \Exception(\sprintf(
                 'Could not get element id from %s Failing part: %s',
                 $elementId,
                 $currentPath

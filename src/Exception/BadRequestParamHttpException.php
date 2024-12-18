@@ -26,13 +26,13 @@ final class BadRequestParamHttpException extends BadRequestHttpException
     public function __construct(
         string $name,
         $expectedTypes,
-        mixed $value
+        mixed $value,
     ) {
         if (!\is_array($expectedTypes)) {
             $expectedTypes = [$expectedTypes];
         }
 
-        $message = sprintf(
+        $message = \sprintf(
             'Expected request parameter "%s" of type "%s", %s given',
             $name,
             implode('|', $expectedTypes),

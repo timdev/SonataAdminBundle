@@ -39,7 +39,7 @@ final class DatagridMapper implements MapperInterface
     public function __construct(
         private DatagridBuilderInterface $builder,
         private DatagridInterface $datagrid,
-        private AdminInterface $admin
+        private AdminInterface $admin,
     ) {
     }
 
@@ -63,7 +63,7 @@ final class DatagridMapper implements MapperInterface
         string $name,
         ?string $type = null,
         array $filterOptions = [],
-        array $fieldDescriptionOptions = []
+        array $fieldDescriptionOptions = [],
     ): self {
         if (
             isset($fieldDescriptionOptions['role'])
@@ -74,7 +74,7 @@ final class DatagridMapper implements MapperInterface
         }
 
         if ($this->getAdmin()->hasFilterFieldDescription($name)) {
-            throw new \LogicException(sprintf(
+            throw new \LogicException(\sprintf(
                 'Duplicate field name "%s" in datagrid mapper. Names should be unique.',
                 $name
             ));

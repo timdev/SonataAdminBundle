@@ -21,7 +21,7 @@ final class FakeTemplateRegistryExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('get_admin_template', [$this, 'getAdminTemplate']),
+            new TwigFunction('get_admin_template', $this->getAdminTemplate(...)),
         ];
     }
 
@@ -35,7 +35,7 @@ final class FakeTemplateRegistryExtension extends AbstractExtension
             return $templates[$name];
         }
 
-        throw new \Exception(sprintf(
+        throw new \Exception(\sprintf(
             'Template "%s" of Admin "%s" not found in FakeTemplateRegistry',
             $name,
             $adminCode
